@@ -1,2 +1,4 @@
 CyclicOutput	KEYWORD1
+begin	KEYWORD2
+registerStateChangeCallback	KEYWORD2
 tick	KEYWORD2
