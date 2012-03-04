@@ -35,6 +35,7 @@ class CyclicOutput {
     CyclicOutput(int pin, unsigned int minOn=1000, unsigned int maxOn=5000, unsigned int minOff=1000, unsigned int maxOff=5000);
 
     void registerStateChangeCallback(void (*stateChangeCallback)(int, boolean));
+    void registerStateChangeTrigger(boolean (*stateChangeTrigger)(int, boolean));
 
     void begin(void);
     void tick(unsigned long time);
@@ -48,7 +49,9 @@ class CyclicOutput {
     unsigned long _lastStateChange;
     boolean _state;
     void (*_stateChangeCallback)(int, boolean);
+    boolean (*_stateChangeTrigger)(int, boolean);
 
+    void triggerTick(unsigned long time);
     void setState(unsigned long time, boolean state);
 };
 

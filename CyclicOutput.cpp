@@ -37,10 +37,15 @@ CyclicOutput::CyclicOutput(int pin, unsigned int minOn, unsigned int maxOn, unsi
   _minOff = minOff;
   _maxOff = maxOff;
   _stateChangeCallback = NULL;
+  _stateChangeTrigger = NULL;
 }
 
 void CyclicOutput::registerStateChangeCallback(void (*stateChangeCallback)(int, boolean)) {
   _stateChangeCallback = stateChangeCallback;
+}
+
+void CyclicOutput::registerStateChangeTrigger(boolean (*stateChangeTrigger)(int, boolean)) {
+  _stateChangeTrigger = stateChangeTrigger;
 }
 
 //! Initialize the object.
@@ -63,11 +68,30 @@ void CyclicOutput::tick(unsigned long time) {
   if (_state) {
     if (elapsedTime >= _maxOn) {
       setState(time, false);
+    } else if (elapsedTime > _minOn) {
+      triggerTick(time);
     }
   } else {
     if (elapsedTime >= _maxOff) {
       setState(time, true);
+    } else if (elapsedTime > _minOff) {
+      triggerTick(time);
     }
+  }
+}
+
+//! Internal method to check if the trigger wants to change the pin state
+/*!
+  If a trigger is registered, give it an opportunity to change the
+  ping state.
+*/
+void CyclicOutput::triggerTick(unsigned long time) {
+  if (_stateChangeTrigger == NULL) return;
+
+  boolean newState = (*_stateChangeTrigger)(_pin, _state);
+
+  if (newState != _state) {
+    setState(time, newState);
   }
 }
 
