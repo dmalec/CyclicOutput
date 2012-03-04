@@ -36,6 +36,11 @@ CyclicOutput::CyclicOutput(int pin, unsigned int minOn, unsigned int maxOn, unsi
   _maxOn = maxOn;
   _minOff = minOff;
   _maxOff = maxOff;
+  _stateChangeCallback = NULL;
+}
+
+void CyclicOutput::registerStateChangeCallback(void (*stateChangeCallback)(int, boolean)) {
+  _stateChangeCallback = stateChangeCallback;
 }
 
 //! Initialize the object.
@@ -80,6 +85,10 @@ void CyclicOutput::setState(unsigned long time, boolean state) {
     digitalWrite(_pin, HIGH);
   } else {
     digitalWrite(_pin, LOW);
+  }
+
+  if (_stateChangeCallback != NULL) {
+    (*_stateChangeCallback)(_pin, _state);
   }
 
   _lastStateChange = time;

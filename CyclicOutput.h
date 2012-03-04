@@ -34,6 +34,8 @@ class CyclicOutput {
   public:
     CyclicOutput(int pin, unsigned int minOn=1000, unsigned int maxOn=5000, unsigned int minOff=1000, unsigned int maxOff=5000);
 
+    void registerStateChangeCallback(void (*stateChangeCallback)(int, boolean));
+
     void begin(void);
     void tick(unsigned long time);
 
@@ -45,6 +47,7 @@ class CyclicOutput {
     unsigned int _maxOff;
     unsigned long _lastStateChange;
     boolean _state;
+    void (*_stateChangeCallback)(int, boolean);
 
     void setState(unsigned long time, boolean state);
 };
