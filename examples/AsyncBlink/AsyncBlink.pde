@@ -21,7 +21,6 @@
 #include "CyclicOutput.h"
 
 const int ledPin = 13;
-
 CyclicOutput ledOutput(ledPin, 500, 500, 2000, 2000);
 
 void setup() {
